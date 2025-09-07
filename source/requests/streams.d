@@ -1147,12 +1147,12 @@ public abstract class SocketStream : NetworkStream {
         while (true) {
             auto r = s.receive(buff);
             if (r <= 0) {
+                r = 0;
+                const code = openssl.ERR_get_error();
                 version(Posix) {
                     if (errno == EINTR)
                         continue;
                 }
-                r = 0;
-                const code = openssl.ERR_get_error();
                 if(code != 0) {
                     const msg = openssl.ERR_reason_error_string(code);
                     close();
